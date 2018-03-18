@@ -1,0 +1,105 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.1
+-- http://www.phpmyadmin.net
+--
+-- Client: localhost
+-- Généré le: Jeu 15 Mars 2018 à 00:04
+-- Version du serveur: 5.5.24-log
+-- Version de PHP: 5.4.3
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Base de données: `pharmacie`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `fournisseur`
+--
+
+CREATE TABLE IF NOT EXISTS `fournisseur` (
+  `nomF` varchar(100) NOT NULL,
+  `qté_livré` int(11) NOT NULL,
+  PRIMARY KEY (`nomF`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `medicament`
+--
+
+CREATE TABLE IF NOT EXISTS `medicament` (
+  `idM` int(11) NOT NULL AUTO_INCREMENT,
+  `nomM` varchar(100) NOT NULL,
+  `typeM` int(11) NOT NULL,
+  `date_perem` date NOT NULL,
+  `prix` double NOT NULL,
+  `nomF` varchar(100) NOT NULL,
+  `idV` int(11) NOT NULL,
+  `matriculeP` varchar(100) NOT NULL,
+  PRIMARY KEY (`idM`),
+  KEY `fk_idV` (`idV`),
+  KEY `fk_nomF` (`nomF`),
+  KEY `fk_matriculeP` (`matriculeP`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `pharmacien`
+--
+
+CREATE TABLE IF NOT EXISTS `pharmacien` (
+  `matriculeP` varchar(100) NOT NULL,
+  `nomP` varchar(100) NOT NULL,
+  `prenomP` varchar(100) NOT NULL,
+  `adresseP` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  PRIMARY KEY (`matriculeP`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `vente`
+--
+
+CREATE TABLE IF NOT EXISTS `vente` (
+  `idV` int(11) NOT NULL AUTO_INCREMENT,
+  `qté_V` int(11) NOT NULL,
+  `matriculeP` varchar(100) NOT NULL,
+  PRIMARY KEY (`idV`),
+  KEY `fk2_matriculeP` (`matriculeP`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `medicament`
+--
+ALTER TABLE `medicament`
+  ADD CONSTRAINT `fk_idV` FOREIGN KEY (`idV`) REFERENCES `vente` (`idV`),
+  ADD CONSTRAINT `fk_matriculeP` FOREIGN KEY (`matriculeP`) REFERENCES `pharmacien` (`matriculeP`),
+  ADD CONSTRAINT `fk_nomF` FOREIGN KEY (`nomF`) REFERENCES `fournisseur` (`nomF`);
+
+--
+-- Contraintes pour la table `vente`
+--
+ALTER TABLE `vente`
+  ADD CONSTRAINT `fk2_matriculeP` FOREIGN KEY (`matriculeP`) REFERENCES `pharmacien` (`matriculeP`);
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
